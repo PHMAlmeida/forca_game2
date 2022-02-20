@@ -9,11 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "axios": "^0.26.0",
+    "geta-random-word": "^2.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.4.0",
     "next": "12.1.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-icons": "^4.3.1"
   },
   "devDependencies": {
+    "@types/mongodb": "^4.0.7",
     "eslint": "8.9.0",
     "eslint-config-next": "12.1.0"
   }
