@@ -34,7 +34,9 @@ body{
 }
 
 .startContainer {
-    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #login{
@@ -66,6 +68,11 @@ body{
     justify-content: center;
 }
 
+.home img {
+    width: 700px;
+    padding-bottom: 30px;
+}
+
 .home input{
     height: 30px;
     width: 30%;
@@ -80,7 +87,7 @@ body{
 }
 
 #dontHaveAcconuntButton, #haveAcconuntButton{
-    margin-left: 50px;
+    margin: 40px;
     border: 4px solid #ECB365;
     border-bottom: 10px solid #ECB365;
     background-color: transparent;
@@ -135,7 +142,7 @@ header button{
 
 .gameContainer{
     width: 100%;
-    height: 100%;
+    height: 90vh;
     animation: entrance 0.3s linear;
     display: flex;
     flex-direction: column;
@@ -144,15 +151,16 @@ header button{
 }
 
 .gameContainer1{
-    padding-top: 60px;
     width: 100%;
     height: 100%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
     text-align: center;
     justify-content: center;
 }
 
 .gameContainer2{
-    margin-top: 30px;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -160,15 +168,14 @@ header button{
     align-items: center;
 }
 
-.letters{
+#letters{
     width: 100%;
     align-items: center;
     justify-content: center;
-    display: flex; 
-    margin-bottom: 50px;   
+    display: flex;   
 }
 
-.letterEmpty{
+.squareEmpty{
     align-items: center;
     width: 120px;
     height: 130px;
@@ -181,7 +188,7 @@ header button{
     
 }
 
-.letterCorrect{
+.squareCorrect{
     animation: flipping 0.5s linear;
     align-items: center;
     width: 120px;
@@ -196,7 +203,7 @@ header button{
     border-bottom: 20px solid #1E5128;
 }
 
-.letterCorrect p{
+.squareCorrect p{
     margin: 0;
     text-align: center;
     text-justify: center;
@@ -296,8 +303,7 @@ header button{
     justify-content: center;
     height: 10%;
     width: 100%;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    padding: 50px;
 }
 
 #guessedLetters{
@@ -309,7 +315,7 @@ header button{
 
 
 #remainingAttempts{
-    font-size: 40px;
+    font-size: 30px;
 }
 
 #gameResultWin{
@@ -364,12 +370,12 @@ header button{
 }
 
 @media (max-width: 730px){
-    .letterEmpty, .letterCorrect {
+    .squareEmpty, .squareCorrect {
         width: 80%;
         height: 110px;
     }
 
-    .letterCorrect p {
+    .squareCorrect p {
         font-size: 50px;
     }
 }
@@ -381,6 +387,17 @@ header button{
 
     .gameContainer2 {
         margin-top: 10px;
+    }
+
+    body {
+        overflow-y: scroll;
+    }
+
+}
+
+@media (max-height: 770px) {    
+    .gameContainer1 {
+       height: 60px;
     }
 }
 
@@ -462,9 +479,8 @@ header button{
     border-radius: 5px;
     align-items: center;
     justify-content: center;
-    text-align: center;
     color: white; 
-    font-size: 20px;    
+    font-size: 100%;    
     padding: 10px;
     color: #041C32;
 }
@@ -511,4 +527,8 @@ header button{
     width: 400px;
     border-radius: 20px;
     border: 4px solid #bd7614;
+}
+
+#wordAnswer {
+    font-size: 20px;
 }
