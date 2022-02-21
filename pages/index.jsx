@@ -7,30 +7,19 @@ import { useState } from 'react';
 import axios from 'axios';
 
 let word;
-let lettersArray;
+let lettersArray = [];
 let lettersAlreadyGuessed = [];
-let remainingAttempts = 5;
+let remainingAttempts = 6;
 let correctsLetters = 0;
 let score = 0;
-let currentScore = 1;
+let currentScore = 6;
 let userEmail;
 
 
 async function getNewWord() {
+
+    var wr = require('random-words')({ exactly: 1, maxLength: 8 })[0];
     
-    const options = {
-        method: 'GET',
-        url: 'https://random-words5.p.rapidapi.com/getMultipleRandom',
-        params: {count: '1', wordLength: '5'},
-        headers: {
-        'x-rapidapi-host': 'random-words5.p.rapidapi.com',
-        'x-rapidapi-key': 'e6b55a88fcmsh355023f7caa90a0p1d86bbjsnc5f734f6cea9'
-        }
-    };
-    
-    let wr = await axios.request(options).then(function (response) {
-        return response.data[0];
-    });
     console.log(wr);
 
     word = wr.toUpperCase();
@@ -39,7 +28,19 @@ async function getNewWord() {
 
 function getWordLetters() {
     lettersArray = word.split('');
-    console.log(lettersArray[0]);
+}
+
+function createSquares() {
+    const squares = document.getElementById("letters");
+    for (let i = 0; i < lettersArray.length; i++) {
+        let square = document.createElement("div");
+        square.classList.add("squareEmpty");
+        square.setAttribute("id", i);
+        squares.appendChild(square);
+        let letterSpace = document.createElement("p");
+        letterSpace.setAttribute("id", "l" + i);
+        square.appendChild(letterSpace);
+    }    
 }
 
 function submitLetter() {
@@ -60,26 +61,24 @@ function submitLetter() {
     
     lettersArray.forEach((element, index) => {
         if (element == letter) {
-            console.log(index);
-            document.getElementById(index.toString()).className = "letterCorrect";
+            document.getElementById(index.toString()).className = "squareCorrect";
             document.getElementById("l" + index.toString()).innerHTML = letter;
             correctsLetters++;
-            console.log("achou");
         }
 
     });
     
     if (lettersArray.find(element => element == letter) == undefined) {
         remainingAttempts--;
-        currentScore = currentScore - 0.2;
+        currentScore = currentScore - 1;
         if (remainingAttempts == 0) {
             YouLose();
         }
-        document.getElementById("remainingAttempts").innerHTML = remainingAttempts + " TIME(S)";
+        document.getElementById("remainingAttempts").innerHTML = "YOU CAN MISS " + remainingAttempts + " TIME(S)";
         document.getElementById("guessedLetters").innerHTML += "&nbsp&nbsp" + letter + "&nbsp&nbsp";
     }
 
-    if (correctsLetters == 5) {
+    if (correctsLetters == lettersArray.length) {
         YouWin();
         score = score + currentScore;
         attScore();
@@ -92,6 +91,7 @@ function YouLose() {
     setTimeout(function(){
         document.getElementById("gameResultLose").style.display = "flex";
     }, 1000); 
+    document.getElementById("wordAnswer").innerHTML = "The word was " + word;
 }
 
 function YouWin() {
@@ -100,34 +100,30 @@ function YouWin() {
     }, 1000); 
 }
 
-function InitGame() {
-    getNewWord();
+async function InitGame() {
+    await getNewWord();
     document.getElementById("home").style.display = "none";
     document.getElementById("game").style.display = "flex";
     if (document.getElementById("gameResultWin").style.display == "flex" || document.getElementById("gameResultLose").style.display == "flex") {
         document.getElementById("gameResultWin").style.display = "none";
         document.getElementById("gameResultLose").style.display = "none";
-        document.getElementById("0").className = "letterEmpty";
-        document.getElementById("1").className = "letterEmpty";
-        document.getElementById("2").className = "letterEmpty";
-        document.getElementById("3").className = "letterEmpty";
-        document.getElementById("4").className = "letterEmpty";
+        document.getElementById("letters").innerHTML = "";
         document.getElementById("guessedLetters").innerHTML = "";
         lettersAlreadyGuessed = [];
-        remainingAttempts = 5;
+        remainingAttempts = 6;
         correctsLetters = 0;
-        currentScore = 1;
-        document.getElementById("remainingAttempts").innerHTML = remainingAttempts + " TIME(S)";
+        currentScore = 6;
+        document.getElementById("remainingAttempts").innerHTML = "YOU CAN MISS " + remainingAttempts + " TIME(S)";
     }
+    createSquares();
 }
 
 function CallHelp() {
     document.getElementById("help").style.display = "flex";
 }
 
-async function ShowScore() {
+async function ShowRanking() {
     const res = await axios.get('api/ranking');
-    console.log(res.data);
     document.getElementById("ranking").style.display = "flex";
 
     document.getElementById("rankingPositions").innerHTML = "Your Score: " + score.toFixed(1);
@@ -140,14 +136,14 @@ async function ShowScore() {
         ranking.appendChild(position);
         document.getElementById("p" + index).style.display = 'flex';
         document.getElementById("p" + index).style.justifyContent = "left";
-        document.getElementById("p" + index).innerHTML = index + "° &nbsp&nbsp" + res.data[i].userName + "(" + res.data[i].email + ") // score: " + res.data[i].score.toFixed(1);
+        document.getElementById("p" + index).innerHTML = index + "° &nbsp&nbsp" + res.data[i].userName + " (" + res.data[i].email + ") // score: " + res.data[i].score.toFixed(1);
     }
 }
 
 function Login() {
-  document.getElementById("login").style.display = "flex";
-  document.getElementById("haveAcconuntButton").style.display = "none";
-  document.getElementById("dontHaveAcconuntButton").style.display = "none";
+    document.getElementById("login").style.display = "flex";
+    document.getElementById("haveAcconuntButton").style.display = "none";
+    document.getElementById("dontHaveAcconuntButton").style.display = "none";
 }
 
 async function attScore() {
@@ -172,7 +168,7 @@ export default function Home() {
         const data = { userName, email, score};
         
         if (email != "" && userName != "") {
-        const res = await axios.post('api/users', data);
+        const res = await axios.post('api/signup', data);
         
         if (res.data.status == 1) {
             alert("Account created. Have fun!");
@@ -228,7 +224,7 @@ export default function Home() {
         <div>
           <div id='home' className="home">
             <div className='forcaLogo'>
-              <img src='../forca_logo.svg'></img>
+              <img src='https://media.discordapp.net/attachments/588544666673086465/945176182725410816/unknown.png?width=1440&height=589'></img>
             </div>
             <div className='startContainer'>
               <button id='haveAcconuntButton' onClick={Login}>I HAVE AN ACCOUNT</button> 
@@ -262,6 +258,7 @@ export default function Home() {
               <div id='gameResultLose'>
                 <AiFillCloseCircle size={200} color = "white" ></AiFillCloseCircle>
                 <p>YOU LOSE</p>
+                <p id='wordAnswer'></p>
                 <input className='non-logged' id='email' type="email" placeholder='Your e-mail' value={email} onChange={e => setEmail(e.target.value)}/>
                 <input className='non-logged' id='userName' type="text" placeholder='Your username' value={userName} onChange={e => setUserName(e.target.value)}/>
                 <button id='tryAgainButton' className='logged' onClick={InitGame}>TRY ANOTHER WORD</button>
@@ -269,10 +266,10 @@ export default function Home() {
               </div>
     
               <div className='containerLogo'>
-                <img src='../forca_logo.svg' width={150}></img>
+                <img src='https://media.discordapp.net/attachments/588544666673086465/945176182725410816/unknown.png?width=1440&height=589' width={150}></img>
               </div>
     
-              <button className='statsButton' onClick={ShowScore}>
+              <button className='statsButton' onClick={ShowRanking}>
                 <MdQueryStats size={40}></MdQueryStats>
               </button>          
             </header>
@@ -295,17 +292,11 @@ export default function Home() {
             </div>
             <div className='gameContainer'>
               <div className='gameContainer1'>
-                <p>YOU CAN MISS</p>
-                <p id="remainingAttempts">5 TIME(S)</p>
+                <p id="remainingAttempts"> YOU CAN MISS 6 TIME(S)</p>
               </div>
     
               <div className='gameContainer2'>
-                <div className='letters'>
-                  <div id="0" className='letterEmpty'><p id='l0'></p></div>
-                  <div id="1" className='letterEmpty'><p id='l1'></p></div>
-                  <div id="2" className='letterEmpty'><p id='l2'></p></div>
-                  <div id="3" className='letterEmpty'><p id='l3'></p></div>
-                  <div id="4" className='letterEmpty'><p id='l4'></p></div>
+                <div id="letters">
                 </div>
                 <div className='guess'>
                   <div className='guessedContainer'>
