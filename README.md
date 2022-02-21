@@ -3,7 +3,7 @@
 
 ## 🎈 Overview
 
-A game that you try to guess a 5-letter-word, letter by letter. You can guess 5 wrong letters.
+A game that you try to guess a word, letter by letter. You can guess 6 wrong letters.
 
 ## ➕ Dependencies
 
